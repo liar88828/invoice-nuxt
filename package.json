@@ -10,8 +10,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/tailwindcss": "6.13.1",
+    "@prisma/nuxt": "^0.3.0",
+    "lucide-vue-next": "^0.475.0",
     "nuxt": "^3.15.4",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vue3-toastify": "^0.2.8",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.23"
   }
 }

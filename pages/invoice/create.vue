@@ -1,0 +1,4 @@
+<template>
+    <InvoiceCreate/>
+</template>
+

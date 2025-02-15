@@ -1,0 +1,72 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    // provider = "mysql"
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Customers {
+    id                Int                 @id @default(autoincrement())
+    nama              String
+    alamat            String
+    kota              String
+    tlp               String
+    Invoice_customers Invoice_customers[]
+}
+
+model Invoice_customers {
+    id          Int        @id @default(autoincrement())
+    nama        String
+    alamat      String
+    kota        String
+    tlp         String
+    Invoices    Invoices   @relation(fields: [invoicesId], references: [id])
+    invoicesId  Int        @unique
+    Customers   Customers? @relation(fields: [customersId], references: [id])
+    customersId Int?
+}
+
+model Products {
+    id               Int                @id @default(autoincrement())
+    nama             String
+    keterangan       String
+    harga            Int
+    jumlah           Int
+    Invoice_products Invoice_products[]
+}
+
+model Invoice_products {
+    id         Int       @id @default(autoincrement())
+    nama       String
+    keterangan String
+    harga      Int
+    jumlah     Int
+    invoicesId Int
+    productsId Int?
+    Invoices   Invoices  @relation(fields: [invoicesId], references: [id])
+    Products   Products? @relation(fields: [productsId], references: [id])
+}
+
+model Invoices {
+    id                Int                @id @default(autoincrement())
+    tanggal_invoice   DateTime
+    ongkir            Int
+    discount          Int
+    total             Int
+    notes             String
+    status            String
+    uang_muka         Int
+    Invoice_products  Invoice_products[]
+    Invoice_customers Invoice_customers?
+}
+
+model Users {
+    id         Int      @id @default(autoincrement())
+    username   String
+    email      String
+    password   String
+    created_at DateTime @default(now())
+}
