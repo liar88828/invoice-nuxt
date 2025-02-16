@@ -7,14 +7,15 @@
         <PageLoading v-if="!data || status === 'pending'"/>
         <PageError v-else-if="!data"/>
         <CustomerTable v-else :customers="data" />
+<!--        <CustomerTestData/>-->
     </div>
 </template>
 
 <script lang="ts" setup>
 import { useCustomer } from "~/composables/customer";
-
-const { onGet, } = useCustomer()
-const { status, data } = await onGet()
+const search=ref('')
+const { onGet } = useCustomer()
+const { status, data } = await onGet(search)
 </script>
 
 <style></style>

@@ -1,3 +1,5 @@
 <template>
- <Customer/>
+    <Customer/>
 </template>
+<script setup lang="ts">
+</script>

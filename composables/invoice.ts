@@ -1,4 +1,10 @@
-import type { InvoiceProductCustomer, InvoiceSchemaType } from "~/schema/invoice";
+import type { Customers, Products } from ".prisma/client";
+import type {
+    InvoiceProductCustomer,
+    InvoiceResponse,
+    InvoiceSchemaType,
+    InvoiceSchemaUpdateType
+} from "~/schema/invoice";
 
 export const useInvoice = () => {
     const invoiceRef = ref<InvoiceSchemaType>({
@@ -10,51 +16,8 @@ export const useInvoice = () => {
         status: "Pending", // Default
         uang_muka: 0,
         productId: [],
-        customersId: 0
+        customerId: 0
     });
-
-
-    const createData = async (invoice: InvoiceSchemaType) => {
-        return await $fetch("/api/invoice", {
-            body: invoice,
-            method: "post",
-            onRequest: ({ request }) => {
-                console.log(request);
-            },
-            onResponse: async ({ response,error }) => {
-                const json = response;
-                const message = json._data.message;
-                // console.log(response);
-                if (response.ok) {
-                    useNuxtApp().$toast.success(message);
-                    await refreshNuxtData("invoice_list");
-                } else {
-                    console.log(error);
-                    console.log(json);
-                    useNuxtApp().$toast.error(message);
-                }
-            },
-        });
-    };
-
-    const updateData = async (invoice: InvoiceSchemaType) => {
-        return await $fetch("/api/invoice/:id", {
-            body: invoice,
-            params: { id: invoice.id },
-            method: "put",
-            onResponse: async ({ response }) => {
-                const json = response;
-                const message = json._data.message;
-                if (response.ok) {
-                    useNuxtApp().$toast.success(message);
-                    await refreshNuxtData("invoice_list");
-                } else {
-                    console.log(json);
-                    useNuxtApp().$toast.error(message);
-                }
-            },
-        });
-    };
 
     const onDelete = async (id: number) => {
         return await $fetch("/api/invoice/:id", {
@@ -79,38 +42,76 @@ export const useInvoice = () => {
             alert("data harus diisi!");
             return;
         }
-        console.log(invoiceRef.value)
-        await createData(invoiceRef.value);
-        // reset
-        invoiceRef.value = {
-            tanggal_invoice: new Date,
-            ongkir: 0,
-            discount: 0,
-            total: 0,
-            notes: "",
-            status: "",
-            uang_muka: 0,
-            productId: [],
-            customersId: 0
-        };
+
+        return await $fetch("/api/invoice", {
+            body: invoiceRef.value,
+            method: "post",
+            onRequest: ({ request }) => {
+                console.log(request);
+            },
+            onResponse: async ({ response,error }) => {
+                const json = response;
+                const message = json._data.message;
+                // console.log(response);
+                if (response.ok) {
+                    useNuxtApp().$toast.success(message);
+                    await refreshNuxtData("invoice_list");
+                } else {
+                    console.log(error);
+                    console.log(json);
+                    useNuxtApp().$toast.error(message);
+                }
+            },
+        });
 
         // Object.assign(product, initialProductForm)
     };
 
 // Handle form submission
-    const onUpdate = async (invoice: InvoiceProductCustomer) => {
-        if (!invoiceRef.value.notes) {
+    const onUpdate = async (
+        invoices: InvoiceSchemaType,
+        customers: Customers,
+        products: Products[]
+    ) => {
+        if (!invoices.notes) {
             alert("data harus diisi!");
             return;
         }
-        const data: InvoiceSchemaType = {
-            ...invoice,
-            tanggal_invoice: invoice.tanggal_invoice,
-            customersId: invoice.Invoice_customers.id,
-            productId: invoice.Invoice_products.map(item => item.id)
+
+        if (!customers) {
+            alert("Customer Not Found!");
+            return;
+        }
+        if (products.length === 0) {
+            alert("Product Not Found!");
+            return;
+        }
+        console.log(invoices);
+        const data: InvoiceSchemaUpdateType = {
+            ...invoices,
+            tanggal_invoice: invoices.tanggal_invoice,
+            // customerIdOld: invoices.customerId,
+            customerIdNew: customers.id,
+            // productIdOld: invoices.productId,
+            productIdNew: products.map(item => item.id),
+
         }
 
-        await updateData(data);
+        return await $fetch("/api/invoice/:id", {
+            body: data,
+            params: { id: data.id },
+            method: "put",
+            onResponse: async ({ response }) => {
+                console.log(response);
+                const message = response._data.message;
+                if (response.ok) {
+                    useNuxtApp().$toast.success(message);
+                    await refreshNuxtData("invoice_list");
+                } else {
+                    useNuxtApp().$toast.error(message);
+                }
+            },
+        });
     };
 
     const onGet = async () => {
@@ -141,8 +142,42 @@ export const useInvoice = () => {
             }
         )
     }
+    const onGetById = async () => {
 
+        const route = useRoute()
+        return useFetch('/api/invoice/:id/',
+            {
+                query: { id: route.params.id },
+                transform: ({ data }): InvoiceResponse => {
+                    if (!data) {
+                        throw new Error('Invoice not found');
+                    }
+                    const { Invoice_customers, Invoice_products, ...invoice } = data
+                    if (!Invoice_customers) {
+                        throw new Error('Invoice_customers not found');
+                    }
+                    if (!Invoice_products) {
+                        throw new Error('Invoice_products not found');
+                    }
+                    const { customersId, id, ...customer } = Invoice_customers
+                    return {
+                        invoiceProps: {
+                            ...invoice,
+                            customerId: id,
+                            productId: Invoice_products.map(item => item.id),
+                            // @ts-expect-error
+                            tanggal_invoice: toDateForm(invoice.tanggal_invoice)
+                        },
+                        customersProps: [ { id: customersId, ...customer } ],
+                        productsProps: Invoice_products.map(item => ({
+                            ...item,
+                            id: item.productsId
+                        })),
+                    }
+                }
+            })
+    }
     return {
-        onUpdate, onCreate, onDelete, onGet, invoiceRef
+        onUpdate, onCreate, onDelete, onGet, invoiceRef,onGetById
     }
 }

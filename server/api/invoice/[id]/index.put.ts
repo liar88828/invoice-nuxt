@@ -1,35 +1,49 @@
-import { z } from "zod"
 import { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
-import { invoiceBodySchema, invoiceIdSchema } from "~/schema/invoice";
+import { invoiceBodySchemaUpdate, invoiceIdSchema } from "~/schema/invoice";
 import { Invoice_customers, Invoice_products } from '.prisma/client'
+import { responseError } from "~/server/service/responseError";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI> => {
-    const idParam = getRouterParam(event, 'id')
+
     try {
+        const { id } = getQuery(event)
         const body = await readBody(event)
-        const id = invoiceIdSchema.parse(idParam)
-        const data = invoiceBodySchema.parse(body)
+        const {
+            id: _,
+            customerIdNew,
+            // customerIdOld,
+            // productIdOld,
+            productIdNew,
+            ...data
+        } = invoiceBodySchemaUpdate.parse(body)
+
+        console.log(`customerIdNew : ${ customerIdNew }, customerIdOld : `)
+        console.log(`productIdNew : ${ productIdNew }, productIdOld : `)
+
         await prisma.$transaction(async (tx) => {
-
-            await tx.invoice_products.deleteMany({
-                where: { invoicesId: id }
+            const foundInvoice = await tx.invoices.findUnique({
+                where: {
+                    id: invoiceIdSchema.parse(Number(id))
+                }
             })
-
-            await tx.invoice_customers.deleteMany({
-                where: { invoicesId: id }
-            })
-
+            if (!foundInvoice) {
+                throw new Error(`No invoice with id ${ id }`)
+            }
             const invoice = await tx.invoices.update({
-                where: { id },
+                where: { id: foundInvoice.id },
                 data
             })
 
+            await tx.invoice_customers.deleteMany({
+                where: { invoicesId: invoice.id }
+            })
+
             const customer = await tx.customers.findUnique({
-                where: { id: data.customersId }
+                where: { id: customerIdNew }
             }).then((item): Omit<Invoice_customers, 'id'> => {
                 if (!item) {
-                    throw new Error("Invoice customer not found")
+                    throw new Error(`Invoice customer not found with id ${customerIdNew  }`)
                 }
                 return ({
                     nama: item.nama,
@@ -40,13 +54,16 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
                     customersId: item.id,
                 })
             }).then(async (item) => {
-                await tx.invoice_customers.createMany({
+                await tx.invoice_customers.create({
                     data: item
                 })
             })
+            await tx.invoice_products.deleteMany({
+                where: { invoicesId: invoice.id }
+            })
 
             const product = await tx.products.findMany({
-                where: { id: { in: data.productId } }
+                where: { id: { in: productIdNew } }
             }).then((productResponse): Omit<Invoice_products, 'id'>[] => {
                 return productResponse.map((item) => ({
                         nama: item.nama,
@@ -66,23 +83,10 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
         })
 
         return {
-            message: "Success Create Data Invoice",
+            message: "Success Update Data Invoice",
             status: true
         }
     } catch (e: unknown) {
-        setResponseStatus(event, 400)
-        if (e instanceof z.ZodError) {
-            return {
-                message: "Error Validation at create",
-                error: e.flatten().formErrors,
-                status: false
-            }
-        }
-
-        return {
-            message: "Fail Create Data Invoice",
-            error: '',
-            status: false
-        }
+        return responseError(e, event, 'Fail Update Data Invoice')
     }
 })

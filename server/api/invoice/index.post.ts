@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
-import { invoiceBodySchema } from "~/schema/invoice";
 import { Invoice_customers, Invoice_products } from '.prisma/client'
+import { invoiceBodySchemaCreate } from "~/schema/invoice";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI> => {
     try {
         const body = await readBody(event)
-        const { customersId, productId, ...data } = invoiceBodySchema.parse(body)
+        const { customerId, productId, ...data } = invoiceBodySchemaCreate.parse(body)
         // console.log(data)
         await prisma.$transaction(async (tx) => {
 
@@ -17,9 +17,7 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
 
             const productDB = await tx.products.findMany({
                 where: {
-                    id: {
-                        in: productId.map(item => item)
-                    }
+                    id: { in: productId.map(item => item) }
                 }
             }).then((productResponse): Omit<Invoice_products, 'id'>[] => {
                 return productResponse.map((item) => ({
@@ -39,7 +37,7 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
             })
 
             const customerDB = await tx.customers.findUnique({
-                where: { id: customersId }
+                where: { id: customerId }
             }).then((item): Omit<Invoice_customers, 'id'> => {
                 if (!item) {
                     throw new Error('Data Customer is Not Found')

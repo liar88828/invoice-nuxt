@@ -1,54 +1,79 @@
 <template>
-    <!-- Open the modal using ID.showModal() method -->
-    <!-- ${product.id} -->
-    <button class="btn btn-info btn-square" @click="openModal">
-        <Pen />
-    </button>
-    <!-- ${product.id} -->
-    <dialog ref="modal" class="modal">
-        <div class="modal-box">
-            <h3 class="text-lg font-bold">Update Add A New Product</h3>
-            <!-- Form -->
-            <form @submit.prevent="submitForm" class="space-y-4">
-                  <div class="form-control">
-                    <label class="text-sm font-medium">Nama Produk</label>
+    <div class="card  card-compact sm:card-normal 	">
+        <div class="card-body">
+            <h3 class="card-title">Update Invoice {{ invoiceProps.id }}</h3>
+            <form @submit.prevent="onSubmit" class="space-y-6   ">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 ">
+                    <div class="form-control  ">
+                        <label class="text-sm font-medium">tanggal_invoice</label>
                     <input
-                        v-model="invoice.nama"
-                        type="text"
+                        v-model="invoiceProps.tanggal_invoice"
+                        type="datetime-local"
                         class="input input-bordered"
-                        placeholder="Masukkan nama produk"
+                        placeholder="Masukkan nama tanggal invoice"
                     />
-                  </div>
+                    </div>
 
-                  <div class="form-control">
-                    <label class="text-sm font-medium">alamat</label>
+                    <div class="form-control">
+                        <label class="text-sm font-medium">Ongkir</label>
                     <input
-                        v-model="customer.alamat"
-                        type="text"
-                        class="input input-bordered"
-                        placeholder="Masukkan alamat produk"
-                    />
-                  </div>
-
-                  <div class="form-control">
-                    <label class="text-sm font-medium">kota</label>
-                    <input
-                        v-model="customer.kota"
+                        v-model="invoiceProps.ongkir"
                         type="number"
                         class="input input-bordered"
-                        placeholder="Masukkan kota produk"
+                        placeholder="Masukkan alamat Ongkir"
                     />
-                  </div>
+                    </div>
 
-                  <div class="form-control">
-                    <label class="before: text-sm font-medium">tlp</label>
+                    <div class="form-control">
+                        <label class="text-sm font-medium">Discount</label>
                     <input
-                        v-model="customer.tlp"
+                        v-model="invoiceProps.discount"
+                        type="number"
                         class="input input-bordered"
-                        type="tel"
-                        placeholder="Masukkan telephone produk"
+                        placeholder="Masukkan kota Discount"
                     />
-                  </div>
+                    </div>
+
+                    <div class="form-control">
+                        <label class=" text-sm font-medium">Total</label>
+                    <input
+                        v-model="invoiceProps.total"
+                        class="input input-bordered"
+                        type="number"
+                        placeholder="Masukkan telephone Total"
+                    />
+                    </div>
+
+
+                    <div class="form-control">
+                        <label class=" text-sm font-medium">Status</label>
+                        <select
+                            v-model="invoiceProps.status"
+                            class="select select-bordered"
+                        >
+                            <option value="Pending">Pending</option>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Dibatalkan">Dibatalkan</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-control">
+                        <label class="text-sm font-medium">Note</label>
+                        <textarea
+                            v-model="invoiceProps.notes"
+                            class="textarea input-bordered"
+                            placeholder="Masukkan telephone Note"
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-6">
+                    <InvoiceCustomerModalButton/>
+                    <InvoiceCustomerTableSelect :customersProps="customersProps"/>
+                    <InvoiceProductModalButton/>
+                    <InvoiceProductTableSelect :productsProps="productsProps"/>
+                </div>
+
                 <button
                     type="submit"
                     class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
@@ -56,32 +81,38 @@
                     Simpan
                 </button>
             </form>
-            <div class="modal-action">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn">Close</button>
-                </form>
-            </div>
         </div>
-    </dialog>
+    </div>
+    <InvoiceCustomerModalSearch :onSelect="onSelectCustomer"/>
+    <InvoiceProductModalSearch :onSelect="onSelectProduct"/>
 </template>
 
 <script lang="ts" setup>
-import { Pen } from "lucide-vue-next";
-import type { Customers } from ".prisma/client";
-import type { InvoiceProductCustomer } from "~/schema/invoice";
-defineProps<{
-    invoice: InvoiceProductCustomer;
-    submitForm: () => void;
-}>();
+import { useInvoice } from "~/composables/invoice";
+import type { Customers, Products } from ".prisma/client";
+import type { InvoiceResponse } from "~/schema/invoice";
 
-const modal = ref<HTMLDialogElement | null>(null);
+const { onUpdate } = useInvoice()
 
-const openModal = () => {
-    if (modal.value) {
-        modal.value.showModal();
-    }
+const { productsProps, customersProps, invoiceProps } = defineProps<InvoiceResponse>()
+
+// const customers = ref<Customers|null>(customersProps);
+// const products = ref<Products[]>(productsProps);
+// const invoices = ref<InvoiceSchemaType>(invoiceProps);
+
+const onSubmit = async () => {
+    // console.log(invoiceProps,
+    //     customersProps,
+    //     productsProps)
+    await onUpdate(invoiceProps, customersProps[0], productsProps)
+}
+
+const onSelectCustomer = (item: Customers) => {
+    customersProps[0] = item; // Safe assignment
 };
+
+const onSelectProduct = (item: Products) => {
+    productsProps.push(item)
+}
 </script>
 
-<style></style>

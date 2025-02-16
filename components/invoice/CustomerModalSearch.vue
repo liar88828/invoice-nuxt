@@ -2,17 +2,14 @@
 import { Check } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useDebounce } from "~/composables/useDebounce";
-import type { Customers } from ".prisma/client";
+import type { Customers ,Invoice_customers} from ".prisma/client";
 
 const { onGet } = useCustomer();
 const search = ref<string>('');
 const debouncedQuery = useDebounce(search, 500);
 const { refresh, data } = await onGet(debouncedQuery);
-const onSearch = () => {
-    refresh();
-
-}
-defineProps<{ onSelect: (customer: Customers) => void }>()
+const onSearch = () => refresh();
+defineProps<{ onSelect: (product: Customers|Invoice_customers) => void }>()
 
 </script>
 
@@ -46,9 +43,8 @@ defineProps<{ onSelect: (customer: Customers) => void }>()
                         <td class="">
                             <div class="modal-action">
                                 <form method="dialog">
-                                    <button
-                                        @click="()=>onSelect(item)" class="btn btn-info btn-square">
-                                        <Check/>
+                                    <button @click="onSelect(item)" class="btn btn-info btn-square">
+                                        <Check />
                                     </button>
                                 </form>
                             </div>

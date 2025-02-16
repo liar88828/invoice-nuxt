@@ -3,9 +3,9 @@ import prisma from "~/lib/prisma"
 import type { InvoiceProductCustomer } from "~/schema/invoice";
 import { invoiceIdSchema } from "~/schema/invoice";
 import { z } from "zod";
-
+//get
 export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProductCustomer>> => {
-    const id = getRouterParam(event, 'id')
+    const { id } = getQuery(event)
     try {
         const invoices = await prisma.invoices.findUnique({
             include: {
@@ -13,10 +13,9 @@ export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProd
                 Invoice_products: true,
             },
             where: {
-                id: invoiceIdSchema.parse(id)
+                id: invoiceIdSchema.parse(Number(id))
             },
         })
-
         if (!invoices) {
             throw new Error('The Data Invoice is Not Found')
         }
@@ -27,8 +26,8 @@ export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProd
             data: invoices,
         }
     } catch (e: unknown) {
-        setResponseStatus(event, 400)
         if (e instanceof z.ZodError) {
+            setResponseStatus(event, 400)
             return {
                 message: "Error Validation",
                 error: e.flatten().formErrors,
@@ -37,12 +36,15 @@ export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProd
         }
 
         if (e instanceof Error) {
+            setResponseStatus(event, 500)
             return {
                 message: e.message,
-                error: "",
+                error: ["Something went wrong"],
                 status: false
             }
         }
+
+        setResponseStatus(event, 500)
         return {
             message: `Fail Find Data Customers by Id : ${id}`,
             error: ["Server Error"],

@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-6 overflow-x-auto w-full">
+    <div class="mt-6 overflow-x-auto ">
         <table class="table" invoices="">
             <thead>
             <tr class="uppercase text-sm">
@@ -26,7 +26,17 @@
                         >
                             <Trash/>
                         </button>
-<!--                        <InvoiceUpdate :invoice="item" :submitForm="() => onUpdate(item)"/>-->
+                        <NuxtLink
+                            :href="`/invoice/update/${item.id}`"
+                            class="btn btn-info btn-square">
+                            <IconPen/>
+                        </NuxtLink>
+                        <NuxtLink
+                            :href="`/invoice/print/${item.id}`"
+                            class="btn btn-success btn-square">
+                            <IconPrinter/>
+                        </NuxtLink>
+
                     </div>
                 </td>
             </tr>
@@ -41,7 +51,7 @@ import { useInvoice } from "~/composables/invoice";
 import type { InvoiceProductCustomer } from "~/schema/invoice";
 
 defineProps<{ invoices: InvoiceProductCustomer[]; }>();
-const { onDelete, onUpdate } = useInvoice()
+const { onDelete } = useInvoice()
 
 </script>
 

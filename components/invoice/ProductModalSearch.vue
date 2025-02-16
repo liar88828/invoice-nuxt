@@ -2,14 +2,14 @@
 import { Check } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useDebounce } from "~/composables/useDebounce";
-import type { Products } from ".prisma/client";
+import type { Invoice_products, Products } from ".prisma/client";
 
 const { onGet } = useProduct();
 const search = ref<string>('');
 const debouncedQuery = useDebounce(search, 500);
 const { refresh, data } = await onGet(debouncedQuery);
 const onSearch = () => refresh();
-defineProps<{ onSelect: (product: Products) => void }>()
+defineProps<{ onSelect: (product: Products | Invoice_products) => void }>()
 
 </script>
 

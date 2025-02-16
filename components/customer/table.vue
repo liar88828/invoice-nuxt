@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-6 overflow-x-auto w-full">
-    <table class="table" customers="">
+  <div class="mt-6 overflow-x-auto ">
+    <table class="table " customers="">
       <thead>
       <tr class="uppercase text-sm">
         <th class="">Nama Customer</th>

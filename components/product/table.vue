@@ -1,7 +1,7 @@
 <template>
     <!-- Table -->
-    <div class="mt-6 overflow-x-auto">
-        <table class="table" products="">
+    <div class="mt-6 overflow-x-auto ">
+        <table class="table " products="">
             <thead>
             <tr class="uppercase text-sm">
                 <th class="">Nama Produk</th>

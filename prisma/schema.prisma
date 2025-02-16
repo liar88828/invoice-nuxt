@@ -18,15 +18,15 @@ model Customers {
 }
 
 model Invoice_customers {
-    id          Int        @id @default(autoincrement())
+    id          Int       @id @default(autoincrement())
     nama        String
     alamat      String
     kota        String
     tlp         String
-    Invoices    Invoices   @relation(fields: [invoicesId], references: [id])
-    invoicesId  Int        @unique
-    Customers   Customers? @relation(fields: [customersId], references: [id])
-    customersId Int?
+    Invoices    Invoices  @relation(fields: [invoicesId], references: [id])
+    invoicesId  Int       @unique
+    Customers   Customers @relation(fields: [customersId], references: [id])
+    customersId Int
 }
 
 model Products {
@@ -39,15 +39,15 @@ model Products {
 }
 
 model Invoice_products {
-    id         Int       @id @default(autoincrement())
+    id         Int      @id @default(autoincrement())
     nama       String
     keterangan String
     harga      Int
     jumlah     Int
     invoicesId Int
-    productsId Int?
-    Invoices   Invoices  @relation(fields: [invoicesId], references: [id])
-    Products   Products? @relation(fields: [productsId], references: [id])
+    Invoices   Invoices @relation(fields: [invoicesId], references: [id])
+    productsId Int
+    Products   Products @relation(fields: [productsId], references: [id])
 }
 
 model Invoices {
@@ -61,6 +61,7 @@ model Invoices {
     uang_muka         Int
     Invoice_products  Invoice_products[]
     Invoice_customers Invoice_customers?
+    createdAt         DateTime           @default(now())
 }
 
 model Users {
