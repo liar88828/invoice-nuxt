@@ -19,6 +19,13 @@ yarn install
 # bun
 bun install
 ```
+## run prisma 
+```bash
+# npm //ex
+npmx prisma db push
+
+ 
+```
 
 ## Development Server
 
