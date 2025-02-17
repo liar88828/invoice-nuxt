@@ -1,6 +1,5 @@
 import type { CustomerSchemaType } from "~/schema/customer";
 import type { Customers } from ".prisma/client";
-import { useDebounce } from "~/composables/useDebounce";
 
 export const useCustomer = () => {
 
@@ -12,10 +11,37 @@ export const useCustomer = () => {
         tlp: "",
     });
 
-    const onGet = async (search: Ref<string, string>) => {
+
+    const onSearch = async (search: Ref<string,string>) => {
+        return useFetch("/api/customer/search", {
+                params: { search } ,
+                watch: [ search ],
+                key: `customer_list${search.value}`,
+                transform: ({ data }) => {
+                    if (data) {
+                        return data.map(
+                            (item): Customers => ({
+                                id: item.id,
+                                nama: item.nama,
+                                alamat: item.alamat,
+                                kota: item.kota,
+                                tlp: item.tlp,
+                            })
+                        );
+                    }
+                    if (!data) {
+                        return null;
+                    }
+                }
+            }
+        )
+    }
+
+
+    const onGet = async <T>(option: Ref<T>) => {
         return useFetch("/api/customer", {
-            params: { search: search },
-            watch: [ search ],
+            params: option,
+            watch: [ option ],
             key: `customer_list`,
                 transform: ({ data }) => {
                     if (data) {
@@ -125,7 +151,20 @@ export const useCustomer = () => {
 
         await updateData(customer);
     };
+
+    const getCity = async  <T>(option: Ref<T>) => {
+        return useFetch("/api/customer/city", {
+            params: option,
+            watch: [ option ],
+            transform: ({ data }): { kota: string }[] => {
+                if (data) {
+                    return data.map(item => ({ kota: item.kota }));
+                }
+                return []
+            }
+        });
+    }
     return {
-        onUpdate, onCreate, onDelete, onGet, customerRef
+        onUpdate, onCreate, onDelete, onGet, customerRef, getCity,onSearch
     }
 }

@@ -10,7 +10,7 @@ defineProps<{ customersProps: Customers[] }>()
 
         <div class="overflow-x-auto">
             <h1 class="text-error text-xl" v-if="customersProps.length===0">Please Select</h1>
-            <table class="table" customers="" v-else>
+            <table class="table table-xs" customers="" v-else>
                 <thead>
                 <tr class="uppercase text-sm">
                     <th class="">Action</th>
@@ -26,9 +26,9 @@ defineProps<{ customersProps: Customers[] }>()
                         <button
                             type="button"
                             @click="()=>{
-                                customersProps.splice(index,1)
-                            }"
-                            class="btn btn-error btn-square">
+                                        customersProps.splice(index,1)
+                                    }"
+                            class="btn btn-error btn-square btn-sm">
                             <X/>
                         </button>
                     </td>

@@ -49,7 +49,7 @@
                 </div>
                 <button
                     type="submit"
-                    class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+                    class="btn btn-info btn-block"
                 >
                     Simpan
                 </button>
@@ -67,6 +67,7 @@
 <script lang="ts" setup>
 import { Plus } from "lucide-vue-next";
 import { useCustomer } from "~/composables/customer";
+
 const {onCreate,customerRef}=useCustomer()
 
 </script>

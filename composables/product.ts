@@ -1,5 +1,6 @@
 import type { ProductSchemaType } from "~/schema/product";
 import type { Products } from ".prisma/client";
+import type { ComputedRef } from "vue";
 
 export const useProduct = () => {
 
@@ -12,12 +13,13 @@ export const useProduct = () => {
     });
 
 // Product list
-    const onGet = async (search: Ref<string, string>) => {
+    const onGet = async <T>(option: Ref<T> | ComputedRef<T>) => {
         return useFetch("/api/product", {
             key: "product_list",
-            params: { search: search },
-            watch: [ search ],
-            transform: ({ data }) => {
+            params: option,
+            watch: [ option ],
+            transform: ({ data, }) => {
+                // console.log(meta);
                 if (data) {
                     return data.map((item):Products => ({
                         id: item.id,
@@ -118,10 +120,29 @@ export const useProduct = () => {
 
         await updateData(product);
     };
+
+    const onSearch = async (search: Ref<string, string>) => {
+        return useFetch("/api/product/search", {
+            key: `product_list_${ search.value }`,
+            params: { search },
+            watch: [ search ],
+            transform: ({ data, }) => {
+                if (data) {
+                    return data.map((item): Products => ({
+                        id: item.id,
+                        nama: item.nama,
+                        keterangan: item.keterangan,
+                        harga: item.harga || 0,
+                        jumlah: item.jumlah || 0,
+                    }));
+                }
+                if (!data) {
+                    return null;
+                }
+            },
+        });
+    }
     return {
-        onCreate, onUpdate,
-        onDelete
-        , onGet,
-        productRef: product,
+        onCreate, onUpdate, onDelete, onGet, productRef: product, onSearch
     }
 }

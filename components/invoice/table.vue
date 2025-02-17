@@ -13,10 +13,10 @@
             </thead>
             <tbody>
             <tr v-for="(item, index) in invoices" :key="index" class="hover:bg-gray-100">
-                <td class="">{{ item.tanggal_invoice }}</td>
-                <td class="">{{ item.ongkir }}</td>
-                <td class="">{{ item.discount }}</td>
-                <td class="">{{ item.total }}</td>
+                <td class="">{{toDate (item.tanggal_invoice) }}</td>
+                <td class="">{{ toPrice(item.ongkir) }}</td>
+                <td class="">{{ item.discount  }} %</td>
+                <td class="">{{ toPrice(item.total) }}</td>
                 <td class="">{{ item.status }}</td>
                 <td class="">
                     <div class="flex gap-2">
@@ -49,6 +49,7 @@
 import { Trash } from "lucide-vue-next";
 import { useInvoice } from "~/composables/invoice";
 import type { InvoiceProductCustomer } from "~/schema/invoice";
+import { toPrice } from "../../utils/toPrice";
 
 defineProps<{ invoices: InvoiceProductCustomer[]; }>();
 const { onDelete } = useInvoice()

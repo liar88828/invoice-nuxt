@@ -4,8 +4,11 @@ import { z } from "zod"
 export const invoiceIdSchema = z.number()
 
 type ExampleType= z.ZodType<Omit<Invoices, 'id' > & {
-    productId: number[],
-    customersId: number,
+    productId: {
+        id: number,
+        qty: number
+    }[],
+    customerId: number,
     id?: number,
 }>
 
@@ -19,7 +22,10 @@ export const invoiceBodySchemaCreate = z.object({
     status: z.string().min(2),
     uang_muka: z.number(),
     customerId: z.number(),
-    productId: z.array(z.number())
+    productId: z.array(z.object({
+        id: z.number(),
+        qty: z.number(),
+    })),
 })
 
 export const invoiceBodySchemaUpdate = z.object({
@@ -31,9 +37,12 @@ export const invoiceBodySchemaUpdate = z.object({
     notes: z.string().min(2),
     status: z.string().min(2),
     uang_muka: z.number(),
-    customerIdNew: z.number(),
+    customerId: z.number(),
     // customerIdOld: z.number(),
-    productIdNew: z.array(z.number()),
+    productId: z.array(z.object({
+        id: z.number(),
+        qty: z.number(),
+    })),
     // productIdOld: z.array(z.number()),
 })
 

@@ -1,84 +1,17 @@
 <template>
-    <div class="card card-body">
-        <h3 class="text-lg font-bold mb-5">Please Add A New Invoice</h3>
-        <form @submit.prevent="onSubmit" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <InvoiceForm
+        :customersProps="customers"
+        :productsProps="products"
+        :invoiceProps="invoiceRef"
+        :onSubmit="onSubmit"
+        title="Please Add A New Invoice"
+    >
+        <InvoiceCustomerModalButton/>
+        <InvoiceCustomerTableSelect :customersProps="customers"/>
 
-                <div class="form-control">
-                    <label class="text-sm font-medium">tanggal_invoice</label>
-                    <input
-                        v-model="invoiceRef.tanggal_invoice"
-                        type="datetime-local"
-                        class="input input-bordered"
-                        placeholder="Masukkan nama tanggal invoice"
-                    />
-                </div>
-
-                <div class="form-control">
-                    <label class="text-sm font-medium">Ongkir</label>
-                    <input
-                        v-model="invoiceRef.ongkir"
-                        type="number"
-                        class="input input-bordered"
-                        placeholder="Masukkan alamat Ongkir"
-                    />
-                </div>
-
-                <div class="form-control">
-                    <label class="text-sm font-medium">Discount</label>
-                    <input
-                        v-model="invoiceRef.discount"
-                        type="number"
-                        class="input input-bordered"
-                        placeholder="Masukkan kota Discount"
-                    />
-                </div>
-
-                <div class="form-control">
-                    <label class=" text-sm font-medium">Total</label>
-                    <input
-                        v-model="invoiceRef.total"
-                        class="input input-bordered"
-                        type="number"
-                        placeholder="Masukkan telephone Total"
-                    />
-                </div>
-
-
-                <div class="form-control">
-                    <label class=" text-sm font-medium">Status</label>
-                    <select
-                        v-model="invoiceRef.status"
-                        class="select select-bordered"
-                    >
-                        <option value="Pending">Pending</option>
-                        <option value="Selesai">Selesai</option>
-                        <option value="Dibatalkan">Dibatalkan</option>
-                    </select>
-                </div>
-
-
-                <div class="form-control">
-                    <label class="text-sm font-medium">Note</label>
-                    <textarea
-                        v-model="invoiceRef.notes"
-                        class="textarea input-bordered"
-                        placeholder="Masukkan telephone Note"
-                    ></textarea>
-                </div>
-
-            </div>
-            <InvoiceCustomerModalButton/>
-            <InvoiceCustomerTableSelect :customersProps="customers"/>
-
-            <InvoiceProductModalButton/>
-            <InvoiceProductTableSelect :productsProps="products"/>
-
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition">
-                Simpan
-            </button>
-        </form>
-    </div>
+        <InvoiceProductModalButton/>
+        <InvoiceProductTableSelect :productsProps="products"/>
+    </InvoiceForm>
     <InvoiceCustomerModalSearch :onSelect="onSelectCustomer"/>
     <InvoiceProductModalSearch :onSelect="onSelectProduct"/>
 
@@ -101,7 +34,10 @@ const onSubmit = async () => {
         alert("Product Not Found!");
         return;
     }
-    invoiceRef.value.productId = products.value.map(item => item.id)
+    invoiceRef.value.productId = products.value.map(item => ({
+        id: item.id,
+        qty: item.jumlah
+    }))
     invoiceRef.value.customerId = customers.value[0].id
     await onCreate()
     invoiceRef.value = {
@@ -126,4 +62,18 @@ const onSelectCustomer = (item: Customers) => {
 const onSelectProduct = (item: Products) => {
     products.value.push(item)
 }
+
+const total = computed(() => {
+    const totalProducts = products.value.reduce((a, b) => a + b.jumlah * b.harga, 0);
+    const totalProductOngkir = totalProducts + invoiceRef.value.ongkir;
+    const discountAmount = (invoiceRef.value.discount / 100) * totalProductOngkir; // Calculate discount
+    const totalAfterDiscount = totalProductOngkir - discountAmount; // Apply discount
+    invoiceRef.value.total = totalAfterDiscount
+    return {
+        totalProducts,
+        totalProductOngkir,
+        totalAfterDiscount,
+    }
+});
+
 </script>

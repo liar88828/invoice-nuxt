@@ -5,10 +5,20 @@ import { z } from "zod";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProductCustomer[]>> => {
     try {
-        const query: { page: string, search: string } = getQuery(event)
+        const query: {
+            page: string,
+            search: string,
+            limit: string,
+            startDate: string,
+            endDate: string
+        } = getQuery(event)
         const page = Number(query.page) || 1
-        const pageSize = 10 // Set the page size
+        const pageSize = Number(query.limit) ?? 10 // Set the page size
         const skip = (page - 1) * pageSize
+        const startDate = new Date(query.startDate);//please +1
+        const endDate = new Date(query.endDate);//please -1
+        // console.log(startDate, endDate)
+        // startDate : 2025-02-15T14:00  , endDate : 2025-02-13T14:00
 
         const invoices = await prisma.invoices.findMany({
             skip,
@@ -18,17 +28,25 @@ export default defineEventHandler(async (event): Promise<ResponseAPI<InvoiceProd
                 Invoice_products:true,
             },
             where: {
-                // nama: {
-                //     contains: query.search ?? ''
-                // },
+                createdAt: {
+                    gte: startDate, // greater than or equal to startDate
+                    lte: endDate,   // less than or equal to endDate
+                },
+                status: {
+                    contains: query.search === 'Default' ? undefined : query.search,
+                },
             },
         })
-
+        // console.log(invoices)
         const totalCount = await prisma.invoices.count({
             where: {
-                // nama: {
-                //     contains: query.search ?? "",
-                // },
+                createdAt: {
+                    gte: startDate, // greater than or equal to startDate
+                    lte: endDate,   // less than or equal to endDate
+                },
+                status: {
+                    contains: query.search === 'Default' ? undefined : query.search,
+                },
             },
         })
 

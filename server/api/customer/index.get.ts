@@ -4,19 +4,27 @@ import { Customers } from '.prisma/client'
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<Customers[]>> => {
     try {
-        const query: { page: string, search: string } = getQuery(event)
-        console.log(query,'execute')
+        const query: { page: string, search: string, limit: string, name: string, city: string } = getQuery(event)
         const page = Number(query.page) || 1
-        const pageSize = 10 // Set the page size
+        const pageSize =  Number(query.limit) // Set the page size
         const skip = (page - 1) * pageSize
 
         const customers = await prisma.customers.findMany({
-            // skip,
-            // take: pageSize,
+            skip,
+            take: pageSize,
+            orderBy: [
+                {
+                    nama: query.name === 'Name' ? undefined
+                        : query.name === 'A-Z' ? 'asc' : 'desc',
+                },
+            ],
             where: {
                 nama: {
-                    contains: query.search ?? ''
+                    contains: query.search ?? '',
                 },
+                kota: {
+                    contains: query.city === 'City' ? undefined : query.city,
+                }
             },
         })
 
@@ -25,6 +33,9 @@ export default defineEventHandler(async (event): Promise<ResponseAPI<Customers[]
                 nama: {
                     contains: query.search ?? "",
                 },
+                kota: {
+                    contains: query.city === 'City' ? undefined : query.city,
+                }
             },
         })
 

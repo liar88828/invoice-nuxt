@@ -4,14 +4,27 @@ import prisma from "~/lib/prisma"
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<Products[]>> => {
     try {
-        const query: { page: string, search: string } = getQuery(event)
+        const query: { page: string, search: string, limit: string, name: string, price: string } = getQuery(event)
+        // console.log('test', query)
+
         const page = Number(query.page) || 1
-        const pageSize = 10 // Set the page size
+        const pageSize = Number(query.limit) ?? 10 // Set the page size
         const skip = (page - 1) * pageSize
 
         const products = await prisma.products.findMany({
-            // skip,
-            // take: pageSize,
+            skip,
+            take: pageSize,
+            orderBy: [
+                {
+                    nama: query.name === 'Default' ? undefined
+                        : query.name === 'A-Z' ? 'asc' : 'desc',
+                },
+
+                {
+                    harga: query.price === 'Default' ? undefined
+                        : query.price === 'Low' ? 'asc' : 'desc'
+                }
+            ],
             where: {
                 nama: {
                     contains: query.search ?? ''

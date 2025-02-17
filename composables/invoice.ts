@@ -91,9 +91,12 @@ export const useInvoice = () => {
             ...invoices,
             tanggal_invoice: invoices.tanggal_invoice,
             // customerIdOld: invoices.customerId,
-            customerIdNew: customers.id,
+            customerId: customers.id,
             // productIdOld: invoices.productId,
-            productIdNew: products.map(item => item.id),
+            productId: products.map(item => ({
+                id: item.id,
+                qty: item.jumlah
+            })),
 
         }
 
@@ -114,11 +117,13 @@ export const useInvoice = () => {
         });
     };
 
-    const onGet = async () => {
+    const onGet = async <T>(option: Ref<T>) => {
         return useFetch("/api/invoice", {
                 key: "invoice_list",
+            params: option,
+            watch: [ option ],
                 transform: ({ data }) => {
-                    console.log(data)
+                    // console.log(data)
 
                     if (data) {
                         return data.map((item): InvoiceProductCustomer => ({
@@ -130,6 +135,7 @@ export const useInvoice = () => {
                                 notes: item.notes,
                                 status: item.status,
                                 uang_muka: item.uang_muka,
+                            createdAt: new Date(item.createdAt),
                                 Invoice_products: item.Invoice_products,
                                 Invoice_customers: item.Invoice_customers
                             })
@@ -164,7 +170,10 @@ export const useInvoice = () => {
                         invoiceProps: {
                             ...invoice,
                             customerId: id,
-                            productId: Invoice_products.map(item => item.id),
+                            productId: Invoice_products.map((item) => ({
+                                id: item.id,
+                                qty: item.jumlah
+                            })),
                             // @ts-expect-error
                             tanggal_invoice: toDateForm(invoice.tanggal_invoice)
                         },

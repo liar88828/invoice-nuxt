@@ -17,20 +17,22 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
 
             const productDB = await tx.products.findMany({
                 where: {
-                    id: { in: productId.map(item => item) }
+                    id: { in: productId.map(item => item.id) }
                 }
             }).then((productResponse): Omit<Invoice_products, 'id'>[] => {
-                return productResponse.map((item) => ({
+                return productResponse.map((item) => {
+                    const product = productId.find((product) => product.id === item.id); // Find the matching productId by id
+                    return {
                         nama: item.nama,
                         keterangan: item.keterangan,
                         harga: item.harga,
-                        jumlah: item.jumlah,
+                        jumlah: product ? product.qty : 0, // If a matching product is found, use its qty, otherwise default to 0
                         invoicesId: invoice.id,
                         productsId: item.id,
-                    })
-                )
+                    };
+                });
             })
-            console.log(productDB)
+            // console.log(productDB)
 
             const product = await tx.invoice_products.createMany({
                 data: productDB
@@ -55,7 +57,7 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
             const customer = await tx.invoice_customers.createMany({
                 data: customerDB
             })
-            console.log(customer)
+            // console.log(customer)
             return { product, customer, invoice }
         })
 

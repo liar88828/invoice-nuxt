@@ -4,9 +4,24 @@
         <table class="table " products="">
             <thead>
             <tr class="uppercase text-sm">
-                <th class="">Nama Produk</th>
+                <th class="">
+                    <div class="flex items-center ">
+                        Nama Produk
+
+<!--                        <IconChevronUp  v-if="price===true" @click="$emit('update:price',   true)"/>-->
+<!--                        <IconChevronDown  v-if="" @click="$emit('update:price',   false)"/>-->
+<!--                        <IconChevronsUpDown  v-if="" @click="$emit('update:price', undefined)"/>-->
+                    </div>
+                </th>
                 <th class="">Keterangan</th>
-                <th class="">Harga</th>
+                <th class="">
+                    <div class="flex items-center ">
+                        Harga
+<!--                        <IconChevronUp-->
+<!--                            @click="$emit('update:price',   + 1)"-->
+<!--                        />-->
+                    </div>
+                </th>
                 <th class="">Jumlah</th>
                 <th class="">Action</th>
             </tr>
@@ -39,7 +54,12 @@ import { Trash } from "lucide-vue-next";
 import type { Products } from "@prisma/client";
 import { useProduct } from "~/composables/product";
 
-defineProps<{ products: Products[]; }>();
+defineProps<{
+    products: Products[];
+    // price?: boolean,
+    // name?: boolean,
+}>();
+// const emit = defineEmits([ "update:price", "update:name" ]);
 const { onDelete, onUpdate } = useProduct()
 
 </script>

@@ -11,15 +11,15 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
         const body = await readBody(event)
         const {
             id: _,
-            customerIdNew,
+            customerId,
             // customerIdOld,
             // productIdOld,
-            productIdNew,
+            productId,
             ...data
         } = invoiceBodySchemaUpdate.parse(body)
 
-        console.log(`customerIdNew : ${ customerIdNew }, customerIdOld : `)
-        console.log(`productIdNew : ${ productIdNew }, productIdOld : `)
+        // console.log(`customerId : ${ customerId }, customerIdOld : `)
+        // console.log(`productId : ${ productId }, productIdOld : `)
 
         await prisma.$transaction(async (tx) => {
             const foundInvoice = await tx.invoices.findUnique({
@@ -40,10 +40,10 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
             })
 
             const customer = await tx.customers.findUnique({
-                where: { id: customerIdNew }
+                where: { id: customerId }
             }).then((item): Omit<Invoice_customers, 'id'> => {
                 if (!item) {
-                    throw new Error(`Invoice customer not found with id ${customerIdNew  }`)
+                    throw new Error(`Invoice customer not found with id ${customerId  }`)
                 }
                 return ({
                     nama: item.nama,
@@ -63,17 +63,21 @@ export default defineEventHandler(async (event): Promise<ResponseAPI> => {
             })
 
             const product = await tx.products.findMany({
-                where: { id: { in: productIdNew } }
+                where: {
+                    id: { in: productId.map(item => item.id) }
+                }
             }).then((productResponse): Omit<Invoice_products, 'id'>[] => {
-                return productResponse.map((item) => ({
+                return productResponse.map((item) => {
+                    const product = productId.find((product) => product.id === item.id); // Find the matching productId by id
+                    return {
                         nama: item.nama,
                         keterangan: item.keterangan,
                         harga: item.harga,
-                        jumlah: item.jumlah,
+                        jumlah: product ? product.qty : 0, // If a matching product is found, use its qty, otherwise default to 0
                         invoicesId: invoice.id,
                         productsId: item.id,
-                    })
-                )
+                    };
+                });
             }).then(async (item) => {
                 await tx.invoice_products.createMany({ data: item })
                 return item
