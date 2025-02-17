@@ -23,8 +23,8 @@ bun install
 ```bash
 # npm //ex
 npx prisma db push
-
  
+bunx prisma db push
 ```
 
 ## Development Server
