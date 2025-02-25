@@ -1,7 +1,7 @@
 import { z } from "zod"
-import { ResponseAPI } from "~/interface/response"
+import  type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
-import { Invoice_customers, Invoice_products } from '.prisma/client'
+import type  { Invoice_customers, Invoice_products } from '@prisma/client'
 import { invoiceBodySchemaCreate } from "~/schema/invoice";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI> => {

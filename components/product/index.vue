@@ -2,7 +2,7 @@
 <template>
     <div class=" mx-auto card card-body bg-base-200">
         <h2 class="card-title">Menu Produk</h2>
-        <div class="flex justify-between">
+        <div class="flex justify-between flex-wrap">
             <div class="join">
                 <input type="search"
                        v-model="option.search" class="input input-bordered join-item"

@@ -1,7 +1,7 @@
 <template>
     <!-- Open the modal using ID.showModal() method -->
     <button class="btn btn-info btn-square" onclick="modal_product.showModal()">
-        <Plus />
+        <IconPlus />
     </button>
     <dialog id="modal_product" class="modal">
         <div class="modal-box">
@@ -64,8 +64,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductSchemaType } from "~/schema/product";
-import { Plus } from "lucide-vue-next";
 import { useProduct } from "~/composables/product";
 
  const {onCreate,productRef}=useProduct()

@@ -1,4 +1,4 @@
-import { ResponseAPI } from "~/interface/response"
+import  type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<{ kota: string }[]>> => {

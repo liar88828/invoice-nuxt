@@ -5,7 +5,7 @@
                 :class=" route.name==='index'&&'active' "
 
                 href="/">
-                <Home/>
+                <IconHome/>
                 Home
             </NuxtLink>
         </li>
@@ -13,7 +13,7 @@
             <NuxtLink
                 :class=" route.path.includes('customer')&&'active' "
                 href="/customer">
-                <CircleUser/>
+                <IconCircleUser/>
                 Customers
                 <span class="badge badge-sm badge-info">{{ data?.customer }}</span>
             </NuxtLink>
@@ -22,7 +22,7 @@
             <NuxtLink
                 :class=" route.path.includes('product')&&'active' "
                 href="/product">
-                <Package/>
+                <IconPackage/>
                 Product
                 <span class="badge badge-sm badge-info">{{ data?.product }}</span>
             </NuxtLink>
@@ -31,7 +31,7 @@
             <NuxtLink
                 :class=" route.path.includes('invoice')&&'active' "
                 href="/invoice">
-                <NotebookText/>
+                <IconNotebookText/>
                 Invoice
                 <span class="badge badge-sm badge-info">{{ data?.invoice }}</span>
             </NuxtLink>
@@ -40,8 +40,6 @@
 </template>
 
 <script lang="ts" setup>
-import { CircleUser, Home, NotebookText, Package } from "lucide-vue-next";
-
 const { data } = await useFetch('/api/option/count', {
     transform: ({ data }) => (data)
 })

@@ -1,11 +1,11 @@
 <template>
     <div class=" card card-body bg-base-200">
         <h2 class="card-title">Menu Customer</h2>
-        <div class="flex justify-between">
+        <div class="flex justify-between flex-wrap">
             <div class="join">
                 <input type="search"
                        v-model="option.search" class="input input-bordered join-item"
-                       placeholder="Search Product"
+                       placeholder="Search Customer"
                 >
                 <button class="btn btn-info join-item">
                     <IconSearch/>

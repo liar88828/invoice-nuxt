@@ -24,7 +24,7 @@
                             @click="() => onDelete(item.id)"
                             class="btn btn-error btn-square"
                         >
-                            <Trash/>
+                            <IconTrash/>
                         </button>
                         <NuxtLink
                             :href="`/invoice/update/${item.id}`"
@@ -46,10 +46,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash } from "lucide-vue-next";
 import { useInvoice } from "~/composables/invoice";
 import type { InvoiceProductCustomer } from "~/schema/invoice";
-import { toPrice } from "../../utils/toPrice";
+import { toPrice } from "~/utils/toPrice";
 
 defineProps<{ invoices: InvoiceProductCustomer[]; }>();
 const { onDelete } = useInvoice()

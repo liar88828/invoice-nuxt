@@ -91,7 +91,7 @@
 
 <script lang="ts" setup>
 import { useInvoice } from "~/composables/invoice";
-import type { Customers, Products } from ".prisma/client";
+import type { Customers, Products } from "@prisma/client";
 
 const customers = ref<Customers[]>([]);
 const products = ref<Products[]>([]);

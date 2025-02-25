@@ -38,7 +38,7 @@
                             @click="() => onDelete(prod.id)"
                             class="btn btn-error btn-square"
                         >
-                            <Trash/>
+                            <IconTrash/>
                         </button>
                         <ProductUpdate :product="prod" :submitForm="() => onUpdate(prod)"/>
                     </div>
@@ -50,9 +50,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash } from "lucide-vue-next";
-import type { Products } from "@prisma/client";
+
 import { useProduct } from "~/composables/product";
+import type { Products } from "@prisma/client";
 
 defineProps<{
     products: Products[];

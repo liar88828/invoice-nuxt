@@ -1,7 +1,7 @@
-import { ResponseAPI } from "~/interface/response"
+import  type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import { invoiceBodySchemaUpdate, invoiceIdSchema } from "~/schema/invoice";
-import { Invoice_customers, Invoice_products } from '.prisma/client'
+import type  { Invoice_customers, Invoice_products } from '@prisma/client'
 import { responseError } from "~/server/service/responseError";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI> => {

@@ -1,4 +1,4 @@
-import { ResponseAPI } from "~/interface/response"
+import type { ResponseAPI } from "~/interface/response"
 import { responseError } from "~/server/service/responseError";
 import type { CountResponse } from "~/interface/option";
 import prisma from "~/lib/prisma";

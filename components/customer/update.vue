@@ -2,7 +2,7 @@
     <!-- Open the modal using ID.showModal() method -->
     <!-- ${product.id} -->
     <button class="btn btn-info btn-square" @click="openModal">
-        <Pen />
+        <IconPen />
     </button>
     <!-- ${product.id} -->
     <dialog ref="modal" class="modal">
@@ -67,8 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Pen } from "lucide-vue-next";
-import type { Customers } from ".prisma/client";
+import type { Customers } from "@prisma/client";
 defineProps<{
     customer: Customers;
     submitForm: () => void;

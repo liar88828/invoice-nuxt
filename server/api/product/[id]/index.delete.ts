@@ -1,6 +1,6 @@
-import { Products } from '.prisma/client'
+import { type Products } from '@prisma/client'
 import { z } from "zod"
-import { ResponseAPI } from "~/interface/response"
+import { type ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import { productCheck } from '~/server/service/product'
 

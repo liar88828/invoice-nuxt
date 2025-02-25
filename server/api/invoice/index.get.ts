@@ -1,4 +1,4 @@
-import { ResponseAPI } from "~/interface/response"
+import  type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import type { InvoiceProductCustomer } from "~/schema/invoice";
 import { z } from "zod";

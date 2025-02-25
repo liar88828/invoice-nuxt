@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useDebounce } from "~/composables/useDebounce";
-import type { Customers, Invoice_customers } from ".prisma/client";
+import type { Customers, Invoice_customers } from "@prisma/client";
 
 const { onSearch } = useCustomer();
 const search = ref<string>('');
@@ -54,7 +53,7 @@ defineProps<{ onSelect: (product: Customers|Invoice_customers) => void }>()
                                         onSelect(item)
                                         search=''
                                         }" class="btn btn-info btn-square btn-sm">
-                                        <Check/>
+                                        <IconCheck/>
                                     </button>
                                 </form>
                             </div>

@@ -1,7 +1,7 @@
 <template>
     <div class=" card card-body bg-base-200">
         <h2 class="card-title">Menu Invoice</h2>
-        <div class="flex justify-between items-end ">
+        <div class="flex justify-between items-end gap-2 flex-wrap">
             <div class="form-control w-fit">
                 <label class=" text-sm font-medium">Status</label>
                 <select
@@ -40,7 +40,7 @@
             <NuxtLink
                 href="/invoice/create"
                 class="btn btn-info btn-square">
-                <Plus/>
+                <IconPlus/>
             </NuxtLink>
         </div>
         <PageLoading v-if="!data || status === 'pending'"/>
@@ -58,7 +58,6 @@
 
 <script lang="ts" setup>
 import { useInvoice } from "~/composables/invoice";
-import { Plus } from 'lucide-vue-next'
 import Pagination from "~/components/Pagination.vue";
 
 const option = ref({

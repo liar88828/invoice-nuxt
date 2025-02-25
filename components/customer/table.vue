@@ -22,7 +22,7 @@
                 @click="() => onDelete(item.id)"
                 class="btn btn-error btn-square"
             >
-              <Trash/>
+              <IconTrash/>
             </button>
             <CustomerUpdate :customer="item" :submitForm="() => onUpdate(item)"/>
           </div>
@@ -34,8 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash } from "lucide-vue-next";
-import type { Customers } from ".prisma/client";
+import type { Customers } from "@prisma/client";
 
 defineProps<{ customers: Customers[]; }>();
 

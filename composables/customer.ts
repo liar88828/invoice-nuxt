@@ -1,5 +1,5 @@
 import type { CustomerSchemaType } from "~/schema/customer";
-import type { Customers } from ".prisma/client";
+import type { Customers } from "@prisma/client";
 
 export const useCustomer = () => {
 
@@ -82,6 +82,7 @@ export const useCustomer = () => {
                     useNuxtApp().$toast.success(message);
                     await refreshNuxtData("customer_list");
                 } else {
+                    console.error(message)
                     useNuxtApp().$toast.error(message);
                 }
             },

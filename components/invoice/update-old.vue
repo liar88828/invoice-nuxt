@@ -89,8 +89,8 @@
 
 <script lang="ts" setup>
 import { useInvoice } from "~/composables/invoice";
-import type { Customers, Products } from ".prisma/client";
 import type { InvoiceResponse } from "~/schema/invoice";
+import type { Customers, Products } from "@prisma/client";
 
 const { onUpdate } = useInvoice()
 

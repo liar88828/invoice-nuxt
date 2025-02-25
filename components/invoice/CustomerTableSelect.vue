@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Customers } from ".prisma/client";
-import { X } from "lucide-vue-next";
+import type { Customers } from "@prisma/client";
 
 defineProps<{ customersProps: Customers[] }>()
 
@@ -29,7 +28,7 @@ defineProps<{ customersProps: Customers[] }>()
                                         customersProps.splice(index,1)
                                     }"
                             class="btn btn-error btn-square btn-sm">
-                            <X/>
+                            <IconX/>
                         </button>
                     </td>
                     <td class="">{{ item.nama }}</td>

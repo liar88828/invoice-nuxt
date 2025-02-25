@@ -1,6 +1,6 @@
-import { ResponseAPI } from "~/interface/response"
+import type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
-import { Customers, Products } from '.prisma/client'
+import type { Customers, Products } from '@prisma/client'
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<Products[]>> => {
     try {

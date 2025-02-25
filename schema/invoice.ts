@@ -1,4 +1,4 @@
-import type { Customers, Invoice_customers, Invoice_products, Invoices, Products } from '.prisma/client'
+import type { Customers, Invoice_customers, Invoice_products, Invoices, Products } from '@prisma/client'
 import { z } from "zod"
 
 export const invoiceIdSchema = z.number()

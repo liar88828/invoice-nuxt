@@ -1,5 +1,5 @@
 import type { ProductSchemaType } from "~/schema/product";
-import type { Products } from ".prisma/client";
+import type { Products } from "@prisma/client";
 import type { ComputedRef } from "vue";
 
 export const useProduct = () => {

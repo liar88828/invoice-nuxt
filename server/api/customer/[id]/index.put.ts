@@ -1,9 +1,10 @@
-import { Customers, Products } from '.prisma/client'
+import type { Customers } from '@prisma/client'
+import type { ResponseAPI } from "~/interface/response"
 import { z } from "zod"
-import { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import { customerBodySchema } from '~/schema/customer'
 import { customerCheck } from "~/server/service/customer";
+
 export default defineEventHandler(async (event): Promise<ResponseAPI<Customers>> => {
     const { id } = getQuery(event)
 

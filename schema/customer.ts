@@ -1,4 +1,4 @@
-import type { Customers } from '.prisma/client'
+import type { Customers } from '@prisma/client'
 import { z } from "zod"
 
 export const customerBodySchema: z.ZodType<Omit<Customers, 'id'>> = z.object({

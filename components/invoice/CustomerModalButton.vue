@@ -1,9 +1,8 @@
 <template>
     <button class="btn btn-info " onclick="my_modal_customer.showModal()" type="button">
-        Add Customer <Plus/>
+        Add Customer <IconPlus/>
     </button>
 </template>
 <script setup lang="ts">
-import { Plus } from 'lucide-vue-next';
 
 </script>

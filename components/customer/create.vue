@@ -1,7 +1,7 @@
 <template>
     <!-- Open the modal using ID.showModal() method -->
     <button class="btn btn-info btn-square" onclick="modal_customer.showModal()">
-        <Plus />
+        <IconPlus />
     </button>
     <dialog id="modal_customer" class="modal">
         <div class="modal-box">
@@ -65,11 +65,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Plus } from "lucide-vue-next";
 import { useCustomer } from "~/composables/customer";
-
 const {onCreate,customerRef}=useCustomer()
-
 </script>
 
 <style></style>

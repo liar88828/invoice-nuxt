@@ -1,4 +1,4 @@
-import { ResponseAPI } from "~/interface/response"
+import  type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import { responseError } from "~/server/service/responseError";
 

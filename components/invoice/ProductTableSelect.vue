@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { X } from "lucide-vue-next";
-import type { Products } from ".prisma/client";
+import type { Products } from "@prisma/client";
 import { toPrice } from "~/utils/toPrice";
 
 defineProps<{ productsProps: Products[] }>()
@@ -41,7 +40,7 @@ const decrement = (item: Products) => {
                                         productsProps.splice(index,1)
                                     }"
                                 class="btn btn-error btn-square btn-sm">
-                                <X/>
+                                <IconX/>
                             </button>
                         </div>
                 </td>

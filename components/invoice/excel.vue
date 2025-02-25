@@ -35,7 +35,7 @@ const exportToExcel = () => {
         customer_alamat: invoice.Invoice_customers?.alamat,
         customer_kota: invoice.Invoice_customers?.kota,
         customer_tlp: invoice.Invoice_customers?.tlp,
-        product_nama: invoice.Invoice_products?.map(item => item.nama).join(', ') || "",
+        product_nama: invoice.Invoice_products?.map(item => `${ item.nama } x ${ item.jumlah } = ${ item.jumlah * item.harga }`).join(', ') || "",
         product_total: invoice.Invoice_products?.reduce((sum, item) => sum + (item.jumlah * item.harga), 0) || 0
     }));
 

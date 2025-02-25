@@ -1,4 +1,4 @@
-import type { Products } from '.prisma/client'
+import type { Products } from '@prisma/client'
 import { z } from "zod"
 
 export const productBodySchema: z.ZodType<Omit<Products, 'id'>> = z.object({

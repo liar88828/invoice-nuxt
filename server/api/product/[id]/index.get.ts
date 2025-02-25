@@ -1,8 +1,8 @@
-import { Products } from './../../../../node_modules/.prisma/client/index.d'
 import { z } from "zod"
-import { ResponseAPI } from "~/interface/response"
+import type { ResponseAPI } from "~/interface/response"
 import prisma from "~/lib/prisma"
 import { productIdSchema } from "~/schema/product"
+import type { Products } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<ResponseAPI<Products>> => {
     const { id } = getQuery(event)

@@ -1,4 +1,4 @@
-import type { Customers, Products } from ".prisma/client";
+import type { Customers, Products } from "@prisma/client";
 import type {
     InvoiceProductCustomer,
     InvoiceResponse,
